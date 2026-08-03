@@ -4,13 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Models\CalonKaryawan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CalonKaryawanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = CalonKaryawan::latest()->paginate(10);
-        return view('calon-karyawan.index', compact('data'));
+        $query = CalonKaryawan::latest();
+
+        // Pencarian berdasarkan nama / kode
+        if ($search = $request->query('q')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('kode', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter status
+        if ($request->query('status') === 'aktif') {
+            $query->where('aktif', true);
+        } elseif ($request->query('status') === 'nonaktif') {
+            $query->where('aktif', false);
+        }
+
+        $data = $query->paginate(10)->withQueryString();
+
+        $total       = CalonKaryawan::count();
+        $totalAktif  = CalonKaryawan::where('aktif', true)->count();
+        $totalNonaktif = $total - $totalAktif;
+
+        return view('calon-karyawan.index', compact('data', 'total', 'totalAktif', 'totalNonaktif'));
     }
 
     public function create()
@@ -21,8 +44,83 @@ class CalonKaryawanController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'kode'                  => 'required|string|max:20|unique:calon_karyawans,kode',
+        $validated = $this->validateData($request);
+
+        $validated['aktif'] = $request->boolean('aktif');
+
+        if ($request->hasFile('foto')) {
+            $validated['foto_path'] = $request->file('foto')->store('calon-karyawan', 'public');
+        }
+
+        $calon = CalonKaryawan::create($validated);
+
+        $this->syncKerabat($calon, $request);
+
+        return redirect()
+            ->route('calon-karyawan.index')
+            ->with('success', 'Data calon karyawan "' . $calon->nama . '" berhasil disimpan.');
+    }
+
+    public function show(CalonKaryawan $calon)
+    {
+        $calon->load('dataKerabats');
+        return view('calon-karyawan.show', compact('calon'));
+    }
+
+    public function edit(CalonKaryawan $calon)
+    {
+        $calon->load('dataKerabats');
+        return view('calon-karyawan.edit', compact('calon'));
+    }
+
+    public function update(Request $request, CalonKaryawan $calon)
+    {
+        $validated = $this->validateData($request, $calon->id);
+
+        $validated['aktif'] = $request->boolean('aktif');
+
+        // Ganti foto bila ada file baru; bila tidak, pertahankan foto lama.
+        if ($request->hasFile('foto')) {
+            if ($calon->foto_path) {
+                Storage::disk('public')->delete($calon->foto_path);
+            }
+            $validated['foto_path'] = $request->file('foto')->store('calon-karyawan', 'public');
+        }
+
+        $calon->update($validated);
+
+        $this->syncKerabat($calon, $request);
+
+        return redirect()
+            ->route('calon-karyawan.show', $calon)
+            ->with('success', 'Data calon karyawan "' . $calon->nama . '" berhasil diperbarui.');
+    }
+
+    public function destroy(CalonKaryawan $calon)
+    {
+        if ($calon->foto_path) {
+            Storage::disk('public')->delete($calon->foto_path);
+        }
+        $calon->delete();
+
+        return redirect()
+            ->route('calon-karyawan.index')
+            ->with('success', 'Data calon karyawan "' . $calon->nama . '" berhasil dihapus.');
+    }
+
+    /**
+     * Validasi bersama untuk store & update.
+     * Parameter $id diabaikan bila null (untuk create).
+     */
+    private function validateData(Request $request, ?int $ignoreId = null): array
+    {
+        $kodeRule = 'required|string|max:20|unique:calon_karyawans,kode';
+        if ($ignoreId) {
+            $kodeRule .= ',' . $ignoreId;
+        }
+
+        return $request->validate([
+            'kode'                  => $kodeRule,
             'nama'                  => 'required|string|max:255',
             'panggilan'             => 'nullable|string|max:255',
             'no_ktp'                => 'nullable|string|max:30',
@@ -87,33 +185,30 @@ class CalonKaryawanController extends Controller
             'kerabat_telp.*'        => 'nullable|string|max:30',
             'kerabat_pekerjaan.*'   => 'nullable|string|max:255',
         ]);
+    }
 
-        $validated['aktif'] = $request->boolean('aktif');
-
-        if ($request->hasFile('foto')) {
-            $validated['foto_path'] = $request->file('foto')->store('calon-karyawan', 'public');
+    /**
+     * Simpan ulang data kerabat dari input (dipakai store & update).
+     */
+    private function syncKerabat(CalonKaryawan $calon, Request $request): void
+    {
+        if (!$request->filled('kerabat_nama')) {
+            return;
         }
 
-        $calon = CalonKaryawan::create($validated);
+        $calon->dataKerabats()->delete();
 
-        // Simpan Data Kerabat (baris dinamis)
-        if ($request->filled('kerabat_nama')) {
-            foreach ($request->input('kerabat_nama') as $i => $namaKerabat) {
-                if (blank($namaKerabat)) {
-                    continue;
-                }
-                $calon->dataKerabats()->create([
-                    'nama'      => $namaKerabat,
-                    'hubungan'  => $request->input('kerabat_hubungan')[$i] ?? null,
-                    'no_telp'   => $request->input('kerabat_telp')[$i] ?? null,
-                    'pekerjaan' => $request->input('kerabat_pekerjaan')[$i] ?? null,
-                ]);
+        foreach ($request->input('kerabat_nama') as $i => $namaKerabat) {
+            if (blank($namaKerabat)) {
+                continue;
             }
+            $calon->dataKerabats()->create([
+                'nama'      => $namaKerabat,
+                'hubungan'  => $request->input('kerabat_hubungan')[$i] ?? null,
+                'no_telp'   => $request->input('kerabat_telp')[$i] ?? null,
+                'pekerjaan' => $request->input('kerabat_pekerjaan')[$i] ?? null,
+            ]);
         }
-
-        return redirect()
-            ->route('calon-karyawan.index')
-            ->with('success', 'Data calon karyawan "' . $calon->nama . '" berhasil disimpan.');
     }
 
     private function generateKode(): string
