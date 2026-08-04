@@ -54,7 +54,7 @@
 <body>
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">SISTEM PEREKRUTAN KARYAWAN <small> &middot;Informasi HRD</small></a>
+            <a class="navbar-brand" href="{{ route('home') }}">PENDAFTARAN CALON KARYAWAN<small> &middot;Buat akun karyawan baru</small></a>
             <a class="btn btn-accent btn-sm" href="{{ route('calon-karyawan.index') }}">Buka Aplikasi &raquo;</a>
         </div>
     </nav>
