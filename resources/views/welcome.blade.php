@@ -49,6 +49,19 @@
         .footer{
             color:#64748b; font-size:.85rem;
         }
+        .feature-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
     </style>
 </head>
 <body>
@@ -82,7 +95,6 @@
         <section class="mt-5">
             <div class="text-center mb-4">
                 <h2 class="h4 fw-bold">Kenapa Gunakan Sistem Ini?</h2>
-                <p class="text-secondary">Dirancang agar mudah dipahami siapa saja.</p>
             </div>
             <div class="row g-3">
                 <div class="col-md-4">
