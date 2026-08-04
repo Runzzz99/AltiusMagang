@@ -74,8 +74,6 @@
                     <a href="{{ route('calon-karyawan.create') }}" class="btn btn-outline-light btn-lg px-4 mb-2">+ Tambah Karyawan Baru</a>
                 </div>
                 <div class="col-lg-4 d-none d-lg-block text-center">
-                    <div class="d-inline-block" style="font-size:5rem">&#128188;</div>
-                    <div class="mt-2 small text-uppercase" style="color:#c7d2fe;letter-spacing:.1em">Modul Rekrutmen HRD</div>
                 </div>
             </div>
         </section>
@@ -89,21 +87,18 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <div class="feature-card h-100">
-                        <div class="icon">&#128203;</div>
                         <h3 class="h6 fw-bold">Data Lengkap &amp; Terstruktur</h3>
                         <p class="small text-secondary mb-0">Data pribadi, pekerjaan, dokumen, rekening, hingga kerabat tercatat rapi dalam satu berkas.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="feature-card h-100">
-                        <div class="icon">&#128269;</div>
                         <h3 class="h6 fw-bold">Mudah Dicari</h3>
                         <p class="small text-secondary mb-0">Cari calon karyawan berdasarkan nama atau kode, dan saring status aktif maupun nonaktif.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="feature-card h-100">
-                        <div class="icon">&#128241;</div>
                         <h3 class="h6 fw-bold">Responsif di Semua Perangkat</h3>
                         <p class="small text-secondary mb-0">Tampilan menyesuaikan layar laptop, tablet, hingga HP agar nyaman digunakan siapa saja.</p>
                     </div>
