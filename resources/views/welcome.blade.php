@@ -22,7 +22,7 @@
             color:var(--ink);
         }
         h1,h2,h3,.brand{ font-family:'Plus Jakarta Sans',sans-serif; }
-        .navbar{ background:var(--primary); box-shadow:0 2px 10px rgba(23,37,84,.25); }
+        .navbar{ background: linear-gradient(180deg, #4A90E2 0%, #1A4B8C 100%);}
         .navbar .navbar-brand{ color:#fff; font-weight:800; }
         .navbar .navbar-brand small{ display:block; font-size:.7rem; color:#c7d2fe; letter-spacing:.08em; text-transform:uppercase; font-family:'Inter'; font-weight:400; }
         .btn-accent{
@@ -30,13 +30,13 @@
         }
         .btn-accent:hover{ background:#d97706; border-color:#d97706; color:#fff; }
         .hero{
-            background:linear-gradient(135deg, #172554 0%, #1e40af 60%, #2563eb 100%);
+            background: linear-gradient(180deg, #4A90E2 0%, #1A4B8C 100%);
             color:#fff;
             border-radius:1.25rem;
             padding:3.5rem 2rem;
             overflow:hidden;
         }
-        .hero .eyebrow{ color:#f59e0b; font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-size:.8rem; }
+        .hero .eyebrow{ color:#fbfbfc; font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-size:.8rem; }
         .hero h1{ font-weight:800; }
         .hero .lead{ color:#dbeafe; }
         .feature-card{
