@@ -28,7 +28,7 @@
             font-family:'Plus Jakarta Sans',sans-serif;
         }
         .navbar{
-            background:var(--primary);
+            background: linear-gradient(180deg, #4A90E2 0%, #1A4B8C 100%);
             box-shadow:0 2px 10px rgba(23,37,84,.25);
         }
         .navbar .navbar-brand{
@@ -102,7 +102,7 @@
             box-shadow:0 0 0 .2rem rgba(30,64,175,.12);
         }
         .btn-primary-soft{
-            background:var(--primary);
+            background: linear-gradient(180deg, #4A90E2 0%, #1A4B8C 100%);
             border-color:var(--primary);
             color:#fff;
             font-weight:600;
@@ -156,7 +156,7 @@
             margin-right:.4rem;
         }
         .step-btn.active .num{
-            background:var(--primary);
+            bbackground: linear-gradient(180deg, #4A90E2 0%, #1A4B8C 100%);
             color:#fff;
         }
         .section-pane{ display:none; padding:1.5rem; }
