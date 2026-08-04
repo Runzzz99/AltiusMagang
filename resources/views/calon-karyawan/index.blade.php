@@ -2,7 +2,10 @@
 @section('title', 'Daftar Calon Karyawan')
 
 @section('content')
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+{{-- Header & Tombol Tambah --}}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3" data-aos="fade-down" data-aos-duration="600">
     <div>
         <h1 class="h4 mb-1">Daftar Calon Karyawan</h1>
         <div class="text-secondary small">Kelola data calon karyawan di sistem HRD.</div>
@@ -12,19 +15,19 @@
 
 {{-- Ringkasan statistik --}}
 <div class="row g-3 mb-3">
-    <div class="col-6 col-md-4">
+    <div class="col-6 col-md-4" data-aos="fade-up" data-aos-delay="100">
         <div class="card-panel p-3 h-100">
             <div class="small text-secondary text-uppercase">Total Kandidat</div>
             <div class="h3 mb-0 fw-bold">{{ $total }}</div>
         </div>
     </div>
-    <div class="col-6 col-md-4">
+    <div class="col-6 col-md-4" data-aos="fade-up" data-aos-delay="200">
         <div class="card-panel p-3 h-100">
             <div class="small text-secondary text-uppercase">Aktif</div>
             <div class="h3 mb-0 fw-bold" style="color:var(--primary)">{{ $totalAktif }}</div>
         </div>
     </div>
-    <div class="col-6 col-md-4">
+    <div class="col-6 col-md-4" data-aos="fade-up" data-aos-delay="300">
         <div class="card-panel p-3 h-100">
             <div class="small text-secondary text-uppercase">Nonaktif</div>
             <div class="h3 mb-0 fw-bold text-secondary">{{ $totalNonaktif }}</div>
@@ -33,7 +36,7 @@
 </div>
 
 {{-- Pencarian & filter --}}
-<form method="GET" action="{{ route('calon-karyawan.index') }}" class="row g-2 mb-3">
+<form method="GET" action="{{ route('calon-karyawan.index') }}" class="row g-2 mb-3" data-aos="fade-up" data-aos-delay="400">
     <div class="col-12 col-md-5">
         <input type="text" name="q" value="{{ request('q') }}" class="form-control"
                placeholder="Cari nama atau kode kandidat...">
@@ -53,7 +56,8 @@
     </div>
 </form>
 
-<div class="card-panel p-3">
+{{-- Tabel Data --}}
+<div class="card-panel p-3" data-aos="fade-up" data-aos-delay="500">
     <div class="table-responsive">
         <table class="table align-middle mb-0">
             <thead>
@@ -93,7 +97,7 @@
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                                 </a>
                                 <form action="{{ route('calon-karyawan.destroy', $row) }}" method="POST" class="d-inline"
-                                      onsubmit="return confirm('Yakin ingin menghapus data \"{{ $row->nama }}\"? Data yang sudah dihapus tidak bisa dikembalikan.')">
+                                      onsubmit="return confirm('Yakin ingin menghapus data \&quot;{{ $row->nama }}\&quot;? Data yang sudah dihapus tidak bisa dikembalikan.')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-outline-danger" title="Hapus data">
@@ -120,8 +124,20 @@
 </div>
 
 @if ($data->hasPages())
-    <div class="mt-3">
+    <div class="mt-3" data-aos="fade-up">
         {{ $data->links('pagination::bootstrap-5') }}
     </div>
 @endif
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({
+            once: true,            // Animasi hanya berjalan 1 kali saat di-scroll
+            duration: 700,         // Durasi animasi (milidetik)
+            easing: 'ease-out-cubic',
+            offset: 40             // Jarak trigger sebelum elemen terlihat
+        });
+    });
+</script>
 @endsection

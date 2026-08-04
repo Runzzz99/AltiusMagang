@@ -7,6 +7,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- ===== [TAMBAHAN 1] CDN AOS (Animate On Scroll) - CSS ===== -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- ===== [AKHIR TAMBAHAN 1] ===== -->
+
     <style>
         :root{
             --ink:#0f172a;
@@ -74,17 +79,17 @@
 
     <div class="container py-4">
         {{-- Hero --}}
-        <section class="hero text-center text-md-start">
+        <section class="hero text-center text-md-start" data-aos="fade-up" data-aos-duration="800">
             <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <div class="eyebrow">Sistem Informasi Kepegawaian</div>
-                    <h1 class="mt-2">Kelola Data Calon Karyawan<br class="d-none d-md-block"> Dengan Mudah &amp; Rapi</h1>
-                    <p class="lead mt-3 mb-4">
+                    <div class="eyebrow" data-aos="fade-up" data-aos-delay="100">Sistem Informasi Kepegawaian</div>
+                    <h1 class="mt-2" data-aos="fade-up" data-aos-delay="200">Kelola Data Calon Karyawan<br class="d-none d-md-block"> Dengan Mudah &amp; Rapi</h1>
+                    <p class="lead mt-3 mb-4" data-aos="fade-up" data-aos-delay="300">
                         Catat, cari, dan kelola data calon karyawan dalam satu tempat.
                         Praktis digunakan di laptop maupun HP.
                     </p>
-                    <a href="{{ route('calon-karyawan.index') }}" class="btn btn-accent btn-lg px-4 me-2 mb-2">Lihat Daftar Calon Karyawan</a>
-                    <a href="{{ route('calon-karyawan.create') }}" class="btn btn-outline-light btn-lg px-4 mb-2">+ Tambah Karyawan Baru</a>
+                    <a href="{{ route('calon-karyawan.index') }}" class="btn btn-accent btn-lg px-4 me-2 mb-2" data-aos="fade-up" data-aos-delay="400">Lihat Daftar Calon Karyawan</a>
+                    <a href="{{ route('calon-karyawan.create') }}" class="btn btn-outline-light btn-lg px-4 mb-2" data-aos="fade-up" data-aos-delay="500">+ Tambah Karyawan Baru</a>
                 </div>
                 <div class="col-lg-4 d-none d-lg-block text-center">
                 </div>
@@ -93,23 +98,23 @@
 
         {{-- Fitur --}}
         <section class="mt-5">
-            <div class="text-center mb-4">
+            <div class="text-center mb-4" data-aos="fade-up">
                 <h2 class="h4 fw-bold">Kenapa Gunakan Sistem Ini?</h2>
             </div>
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="feature-card h-100">
                         <h3 class="h6 fw-bold">Data Lengkap &amp; Terstruktur</h3>
                         <p class="small text-secondary mb-0">Data pribadi, pekerjaan, dokumen, rekening, hingga kerabat tercatat rapi dalam satu berkas.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-card h-100">
                         <h3 class="h6 fw-bold">Mudah Dicari</h3>
                         <p class="small text-secondary mb-0">Cari calon karyawan berdasarkan nama atau kode, dan saring status aktif maupun nonaktif.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="feature-card h-100">
                         <h3 class="h6 fw-bold">Responsif di Semua Perangkat</h3>
                         <p class="small text-secondary mb-0">Tampilan menyesuaikan layar laptop, tablet, hingga HP agar nyaman digunakan siapa saja.</p>
@@ -119,9 +124,21 @@
         </section>
 
         {{-- Footer --}}
-        <footer class="footer text-center py-4 mt-4 border-top">
+        <footer class="footer text-center py-4 mt-4 border-top" data-aos="fade-in">
             &copy; {{ date('Y') }} Sistem HRD &middot; Modul Rekrutmen Data Calon Karyawan.
         </footer>
     </div>
+
+    <!-- ===== [TAMBAHAN 2] CDN AOS (Animate On Scroll) - JS + Inisialisasi ===== -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 700,   // durasi animasi (ms)
+            easing: 'ease-out-cubic',
+            once: true,      // animasi hanya sekali muncul (tidak berulang saat scroll bolak-balik)
+            offset: 60       // jarak (px) sebelum elemen dianggap "masuk viewport"
+        });
+    </script>
+    <!-- ===== [AKHIR TAMBAHAN 2] ===== -->
 </body>
 </html>

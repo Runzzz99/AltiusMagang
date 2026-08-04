@@ -1,3 +1,17 @@
+{{-- ===== [TAMBAHAN 1] CDN CSS AOS (Animate On Scroll) - diletakkan paling atas file ===== --}}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+{{-- ===== [AKHIR TAMBAHAN 1] ===== --}}
+
+{{-- ===== [TAMBAHAN 1B - FIX] CSS pendukung agar AOS berjalan mulus di semua pane ===== --}}
+{{-- Masalah: pane 2-5 disembunyikan via display:none, sehingga AOS gagal menghitung --}}
+{{-- posisi/ukurannya saat pertama kali render dan animasi tidak konsisten muncul. --}}
+<style>
+    .section-pane { display: none; }
+    .section-pane.active { display: block !important; }
+    .section-pane.active[data-aos]:not(.aos-animate) { opacity: 0; }
+</style>
+{{-- ===== [AKHIR TAMBAHAN 1B] ===== --}}
+
 {{--
     Form reusable untuk Tambah (calon = null) & Edit (calon = object).
     Variabel yang tersedia: $calon (nullable), $kodeBerikutnya, $kodeField.
@@ -42,7 +56,7 @@
         </nav>
 
         {{-- 1. DATA PRIBADI --}}
-        <div class="section-pane active" id="pane-pribadi">
+        <div class="section-pane active" id="pane-pribadi" data-aos="fade-up" data-aos-once="false">
             <div class="section-title">Identitas Diri</div>
             <div class="row g-3">
                 <div class="col-md-6">
@@ -127,7 +141,7 @@
         </div>
 
         {{-- 2. ALAMAT & KONTAK --}}
-        <div class="section-pane" id="pane-kontak">
+        <div class="section-pane" id="pane-kontak" data-aos="fade-up" data-aos-once="false">
             <div class="section-title">Alamat &amp; Kontak</div>
             <div class="row g-3">
                 <div class="col-12">
@@ -167,7 +181,7 @@
         </div>
 
         {{-- 3. DATA PEKERJAAN --}}
-        <div class="section-pane" id="pane-kerja">
+        <div class="section-pane" id="pane-kerja" data-aos="fade-up" data-aos-once="false">
             <div class="section-title">Data Pekerjaan &amp; Penempatan</div>
             <div class="row g-3">
                 <div class="col-md-4">
@@ -251,7 +265,7 @@
         </div>
 
         {{-- 4. DOKUMEN & KERABAT --}}
-        <div class="section-pane" id="pane-dokumen">
+        <div class="section-pane" id="pane-dokumen" data-aos="fade-up" data-aos-once="false">
             <div class="section-title">Dokumen Identitas</div>
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
@@ -350,7 +364,7 @@
         </div>
 
         {{-- 5. REKENING & FOTO --}}
-        <div class="section-pane" id="pane-rekening">
+        <div class="section-pane" id="pane-rekening" data-aos="fade-up" data-aos-once="false">
             <div class="section-title">Informasi Rekening</div>
             <div class="row g-3 mb-4">
                 <div class="col-md-3">
@@ -406,9 +420,36 @@
     const steps = document.querySelectorAll('.step-btn');
     const panes = document.querySelectorAll('.section-pane');
     function goTo(targetId){
-        panes.forEach(p => p.classList.toggle('active', p.id === targetId));
         steps.forEach(s => s.classList.toggle('active', s.dataset.target === targetId));
         window.scrollTo({top: document.querySelector('.card-panel').offsetTop - 20, behavior:'smooth'});
+
+        // ===== [TAMBAHAN 2 - FIX] Re-trigger animasi AOS agar mulus di SEMUA pane (1-5) =====
+        // Urutan lama: toggle 'active' lalu langsung toggle 'aos-animate' pada frame yang sama
+        // menyebabkan browser belum sempat mengubah display:none -> block, sehingga AOS gagal
+        // menghitung ukuran/posisi pane (khususnya pane 2-5 yang awalnya tersembunyi).
+        // Perbaikan: lepas 'active' & 'aos-animate' dari SEMUA pane dulu, pasang 'active' pada
+        // pane target (memicu display:none -> block), baru setelah jeda singkat (setTimeout)
+        // pasang kembali 'aos-animate' dan panggil AOS.refresh().
+        panes.forEach(p => {
+            p.classList.remove('active');
+            p.classList.remove('aos-animate');
+        });
+
+        const activePane = document.getElementById(targetId);
+        if (activePane) {
+            activePane.classList.add('active'); // display: none -> block terjadi di sini
+        }
+
+        setTimeout(() => {
+            if (typeof AOS !== 'undefined') {
+                // Refresh dulu agar AOS mengukur ulang posisi pane yang baru saja tampil (display:block)
+                AOS.refresh();
+                if (activePane) {
+                    activePane.classList.add('aos-animate'); // munculkan animasi fade-up
+                }
+            }
+        }, 20); // micro-delay 20ms: cukup untuk browser menyelesaikan reflow display:none -> block
+        // ===== [AKHIR TAMBAHAN 2] =====
     }
     steps.forEach(btn => btn.addEventListener('click', () => goTo(btn.dataset.target)));
     document.querySelectorAll('.next-step').forEach(btn => btn.addEventListener('click', () => {
@@ -454,3 +495,21 @@
         }
     });
 </script>
+
+{{-- ===== [TAMBAHAN 3] CDN JS AOS + Inisialisasi - diletakkan paling bawah file ===== --}}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 600,       // durasi animasi (ms)
+        easing: 'ease-out-cubic',
+        once: false,         // false: animasi bisa terulang, dibutuhkan agar tiap ganti tab tetap muncul animasi
+        offset: 0,           // pane form biasanya sudah ada di dalam viewport saat aktif
+        mirror: false,
+        disable: false,
+        startEvent: 'DOMContentLoaded'
+    });
+    // Catatan: class 'aos-animate' pada pane 1-5 dikontrol MANUAL lewat fungsi goTo() di atas
+    // (bukan murni mengandalkan scroll observer bawaan AOS), karena perpindahan pane terjadi
+    // via display:none/block, bukan scroll halaman sesungguhnya.
+</script>
+{{-- ===== [AKHIR TAMBAHAN 3] ===== --}}
