@@ -43,11 +43,12 @@
         .navbar{
             background:linear-gradient(180deg, var(--blue) 0%, var(--blue-deep) 100%);
             box-shadow:0 4px 18px rgba(23,37,84,.18);
-            padding:.9rem 0;
+            padding:1rem 0;
         }
-        .navbar .navbar-brand{ color:#fff; font-weight:800; letter-spacing:.01em; }
-        .navbar .navbar-brand small{
-            display:block; font-size:.68rem; color:#c7d2fe; letter-spacing:.12em; text-transform:uppercase; font-family:'Inter'; font-weight:500;
+        .navbar .container{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+        .navbar .navbar-brand{
+            color:#fff; font-weight:800; letter-spacing:.01em; line-height:1.15;
+            margin:0; white-space:normal;
         }
         .btn-accent{
             background:linear-gradient(135deg,#fbbf24, #f59e0b);
@@ -232,9 +233,8 @@
         ===================================================== */
         @media (max-width:575.98px){
             /* Navbar lebih ringkas */
-            .navbar{ padding:.7rem 0; }
+            .navbar{ padding:.75rem 0; }
             .navbar .navbar-brand{ font-size:.92rem; line-height:1.25; }
-            .navbar .navbar-brand small{ font-size:.6rem; letter-spacing:.08em; }
             .navbar .btn-accent{ padding-left:.9rem; padding-right:.9rem; font-size:.82rem; }
 
             /* Hero */
@@ -290,7 +290,7 @@
 
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">PENDAFTARAN CALON KARYAWAN<small>&middot; Modul Rekrutmen Karyawan Baru</small></a>
+            <a class="navbar-brand" href="{{ route('home') }}">PENDAFTARAN CALON KARYAWAN</a>
             <a class="btn btn-accent btn-sm px-3" href="{{ route('calon-karyawan.index') }}">Daftar</a>
         </div>
     </nav>
