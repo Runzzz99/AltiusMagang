@@ -57,10 +57,12 @@
         /* ---------- Hero ---------- */
         .hero{
             position:relative;
-            background:linear-gradient(140deg, #3b82f6 0%, var(--blue) 42%, var(--blue-deep) 100%);
+            background:
+                linear-gradient(120deg, rgba(20,40,90,.88) 0%, rgba(26,75,140,.72) 45%, rgba(59,130,246,.55) 100%),
+                url("{{ asset('img/Backgroud.jpg') }}") center/cover no-repeat;
             color:#fff;
             border-radius:1.5rem;
-            padding:4rem 2.5rem;
+            padding:2.25rem 2.5rem;
             overflow:hidden;
             box-shadow:0 24px 60px -18px rgba(30,64,175,.5);
         }
@@ -121,7 +123,7 @@
         .dash-bar{ height:7px; border-radius:999px; background:#e8edf4; overflow:hidden; }
         .dash-bar i{ display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--blue),var(--primary-dark)); }
         @media (max-width:991.98px){
-            .hero{ padding:2.6rem 1.4rem; }
+            .hero{ padding:2rem 1.4rem; }
             .hero-visual{ display:none; }
         }
 
@@ -197,7 +199,9 @@
         /* ---------- CTA band ---------- */
         .cta-band{
             position:relative; overflow:hidden;
-            background:linear-gradient(140deg,#3b82f6 0%, var(--blue) 40%, var(--blue-deep) 100%);
+            background:
+                linear-gradient(120deg, rgba(20,40,90,.88) 0%, rgba(26,75,140,.72) 45%, rgba(59,130,246,.55) 100%),
+                url("{{ asset('img/Backgroud.jpg') }}") center/cover no-repeat;
             border-radius:1.5rem; padding:3rem 2rem; color:#fff;
             box-shadow:0 24px 60px -18px rgba(30,64,175,.5);
         }
@@ -222,8 +226,8 @@
 
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">PENDAFTARAN CALON KARYAWAN<small>&middot; Modul Rekrutmen Sistem HRD</small></a>
-            <a class="btn btn-accent btn-sm px-3" href="{{ route('calon-karyawan.index') }}">Buka Aplikasi &raquo;</a>
+            <a class="navbar-brand" href="{{ route('home') }}">PENDAFTARAN CALON KARYAWAN<small>&middot; Modul Rekrutmen Karyawan Baru</small></a>
+            <a class="btn btn-accent btn-sm px-3" href="{{ route('calon-karyawan.index') }}">Daftar</a>
         </div>
     </nav>
 
@@ -233,8 +237,7 @@
         <section class="hero" data-aos="fade-up" data-aos-duration="800">
             <div class="row align-items-center position-relative">
                 <div class="col-lg-7">
-                    <div class="eyebrow" data-aos="fade-up" data-aos-delay="80">Sistem Informasi Kepegawaian</div>
-                    <h1 class="mt-3 display-font" data-aos="fade-up" data-aos-delay="160">
+                    <h1 class="display-font" data-aos="fade-up" data-aos-delay="160">
                         Kelola Data Calon Karyawan<br class="d-none d-md-block"> Dengan <span class="text-warning">Mudah</span> &amp; Rapi
                     </h1>
                     <p class="lead mt-3 mb-4 hero-tagline" data-aos="fade-up" data-aos-delay="240">
@@ -436,7 +439,7 @@
 
         {{-- ===== Footer ===== --}}
         <footer class="footer text-center py-4 mt-5 border-top" data-aos="fade-in">
-            &copy; {{ date('Y') }} <span class="brand-name">Sistem HRD</span> &middot; Modul Rekrutmen Data Calon Karyawan.
+            &copy; {{ date('Y') }} <span class="brand-name">Altius</span> &middot; Modul Rekrutmen Data Calon Karyawan.
         </footer>
     </div>
 
