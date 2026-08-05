@@ -4,7 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CalonKaryawanController;
 
 Route::get('/', function () {
-    return view('welcome');
+    $total       = App\Models\CalonKaryawan::count();
+    $totalAktif  = App\Models\CalonKaryawan::where('aktif', true)->count();
+    $totalNonaktif = $total - $totalAktif;
+
+    return view('welcome', compact('total', 'totalAktif', 'totalNonaktif'));
 })->name('home');
 
 Route::prefix('hrd')->group(function () {
