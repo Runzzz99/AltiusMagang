@@ -22,6 +22,15 @@
             --accent:#f59e0b;
             --accent-dark:#d97706;
         }
+        html{
+            /* Scroll yang lebih halus di semua perangkat */
+            scroll-behavior:smooth;
+            /* Beri jarak agar konten tidak tertutup navbar sticky saat anchor/scroll */
+            scroll-padding-top:84px;
+        }
+        @media (prefers-reduced-motion: reduce){
+            html{ scroll-behavior:auto; }
+        }
         *{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
         body{
             font-family:'Inter',sans-serif;
@@ -59,7 +68,7 @@
             position:relative;
             background:
                 linear-gradient(120deg, rgba(20,40,90,.88) 0%, rgba(26,75,140,.72) 45%, rgba(59,130,246,.55) 100%),
-                url("{{ asset('img/Backgroud.jpg') }}") center/cover no-repeat;
+                url("{{ asset('img/Backgroud.jpeg') }}") center/cover no-repeat;
             color:#fff;
             border-radius:1.5rem;
             padding:2.25rem 2.5rem;
@@ -201,7 +210,7 @@
             position:relative; overflow:hidden;
             background:
                 linear-gradient(120deg, rgba(20,40,90,.88) 0%, rgba(26,75,140,.72) 45%, rgba(59,130,246,.55) 100%),
-                url("{{ asset('img/Backgroud.jpg') }}") center/cover no-repeat;
+                url("{{ asset('img/Backgroud.jpeg') }}") center/cover no-repeat;
             border-radius:1.5rem; padding:3rem 2rem; color:#fff;
             box-shadow:0 24px 60px -18px rgba(30,64,175,.5);
         }
@@ -217,8 +226,63 @@
         .footer{ color:#64748b; font-size:.83rem; }
         .footer .brand-name{ color:var(--primary-dark); font-weight:800; }
 
+        /* =====================================================
+           MOBILE (max-width: 575.98px)
+           Hanya menyentuh tampilan HP, laptop tidak berubah.
+        ===================================================== */
         @media (max-width:575.98px){
-            .hero{ border-radius:1.1rem; }
+            /* Navbar lebih ringkas */
+            .navbar{ padding:.7rem 0; }
+            .navbar .navbar-brand{ font-size:.92rem; line-height:1.25; }
+            .navbar .navbar-brand small{ font-size:.6rem; letter-spacing:.08em; }
+            .navbar .btn-accent{ padding-left:.9rem; padding-right:.9rem; font-size:.82rem; }
+
+            /* Hero */
+            .hero{ padding:1.75rem 1.25rem; border-radius:1.1rem; }
+            .hero h1{ font-size:1.55rem; line-height:1.2; }
+            .hero .lead{ font-size:.92rem; margin-top:.8rem; margin-bottom:1.2rem !important; }
+            .hero .btn-lg{ font-size:.9rem; padding:.55rem .9rem; }
+            .hero-tagline .lead{ max-width:100%; }
+
+            /* Stat chips hero */
+            .hero-chips{ gap:.45rem; }
+            .hero-chip{ padding:.42rem .7rem; gap:.45rem; border-radius:12px; }
+            .hero-chip b{ font-size:1rem; }
+            .hero-chip span{ font-size:.64rem; }
+
+            /* Stat band di bawah hero */
+            .stat-band{ margin-top:-1.6rem; }
+            .stat-card{ padding:.9rem 1rem; gap:.75rem; }
+            .stat-icon{ width:40px;height:40px;border-radius:11px; }
+            .stat-card .num{ font-size:1.3rem; }
+            .stat-card .lbl{ font-size:.66rem; }
+            .stat-card .sub{ font-size:.66rem; }
+
+            /* Section */
+            .section{ padding-top:2.6rem; }
+            .section-head{ margin-bottom:1.6rem; }
+            .section-head h2{ font-size:1.35rem; }
+            .section-head p{ font-size:.88rem; }
+
+            /* Feature card */
+            .feature-card{ padding:1.35rem 1.2rem; }
+            .feature-card .icon{ width:44px;height:44px;border-radius:12px; margin-bottom:.9rem; }
+            .feature-card h3{ font-size:.98rem; }
+            .feature-card p{ font-size:.84rem; }
+
+            /* Process steps */
+            .step-item .step-num{ width:40px;height:40px;font-size:.95rem; }
+            .step-item h4{ font-size:.95rem; }
+            .step-item p{ font-size:.84rem; }
+
+            /* CTA band */
+            .cta-band{ padding:2.1rem 1.25rem; border-radius:1.1rem; }
+            .cta-band h2{ font-size:1.35rem; }
+            .cta-band p{ font-size:.88rem; }
+            .cta-band .btn-lg{ font-size:.88rem; padding:.55rem .9rem; }
+
+            /* Footer */
+            .footer{ font-size:.78rem; }
         }
     </style>
 </head>
@@ -245,7 +309,7 @@
                         Praktis digunakan di <strong>laptop</strong> maupun <strong>HP</strong>.
                     </p>
 
-                    <div class="d-flex flex-wrap gap-2 mb-4" data-aos="fade-up" data-aos-delay="320">
+                    <div class="d-flex flex-column flex-sm-row flex-wrap gap-2 mb-4" data-aos="fade-up" data-aos-delay="320">
                         <a href="{{ route('calon-karyawan.index') }}" class="btn btn-accent btn-lg px-4">Lihat Daftar Calon Karyawan</a>
                         <a href="{{ route('calon-karyawan.create') }}" class="btn btn-outline-light btn-lg px-4">+ Tambah Karyawan Baru</a>
                     </div>
@@ -450,6 +514,17 @@
             easing: 'ease-out-cubic',
             once: true,
             offset: 60
+        });
+
+        // Matikan fitur browser yang mengingat posisi scroll agar
+        // saat refresh halaman selalu terbuka dari atas.
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted || performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+                window.scrollTo(0, 0);
+            }
         });
     </script>
 </body>

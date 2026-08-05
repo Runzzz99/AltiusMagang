@@ -18,6 +18,15 @@
             --accent:#f59e0b;
             --accent-soft:#fef3c7;
         }
+        html{
+            /* Scroll yang lebih halus di semua perangkat */
+            scroll-behavior:smooth;
+            /* Beri jarak agar konten tidak tertutup navbar sticky saat anchor/scroll */
+            scroll-padding-top:84px;
+        }
+        @media (prefers-reduced-motion: reduce){
+            html{ scroll-behavior:auto; }
+        }
         body{
             background:var(--bg);
             color:var(--ink);
@@ -260,10 +269,67 @@
         }
         /* Responsive: padding form lebih ringkas di HP */
         @media (max-width: 575.98px){
-            .shell{ margin:1rem auto; }
+            .shell{ margin:.9rem auto; }
             .section-pane{ padding:1.1rem; }
             .wizard-stepbar{ gap:.25rem .4rem; }
             .wizard-stepbar .w-title{ font-size:.75rem; }
+        }
+
+        /* =====================================================
+           MOBILE (max-width: 575.98px)
+           Hanya menyentuh tampilan HP, laptop tidak berubah.
+        ===================================================== */
+        @media (max-width: 575.98px){
+            body{ padding-bottom:2rem; }
+
+            /* Navbar lebih ringkas */
+            .navbar{ padding:.65rem 0; }
+            .navbar .navbar-brand{ font-size:.95rem; line-height:1.25; }
+            .navbar .navbar-brand small{ font-size:.62rem; letter-spacing:.06em; }
+            .navbar .nav-link{ font-size:.95rem; }
+            .navbar .btn-accent{ font-size:.85rem; padding-left:.9rem; padding-right:.9rem; }
+            .navbar .navbar-toggler{ padding:.3rem .5rem; }
+            .navbar-collapse{ padding-top:.4rem; }
+            .navbar-collapse .nav-link{ padding:.55rem .25rem; border-top:1px solid rgba(255,255,255,.14); }
+            .navbar-collapse .nav-item:last-child{ border-bottom:1px solid rgba(255,255,255,.14); }
+            .navbar-collapse .btn-accent{ margin-top:.6rem; }
+
+            /* Container / kartu */
+            .shell{ padding:0 .75rem; }
+            .card-panel{ border-radius:12px; }
+            .card-panel.p-3{ padding:.9rem .85rem !important; }
+
+            /* Heading halaman */
+            h1.h4{ font-size:1.2rem; }
+            .shell > div:first-child .text-secondary.small{ font-size:.8rem; }
+
+            /* Form control lebih nyaman disentuh */
+            .form-label{ font-size:.78rem; }
+            .form-control, .form-select{ font-size:.95rem; padding:.55rem .7rem; }
+            .input-group-text{ padding:.55rem .6rem; }
+            .input-group-text svg{ width:15px;height:15px; }
+
+            /* Tombol di mobile memakai lebar penuh pada halaman daftar */
+            .btn{ white-space:normal; }
+            .btn-primary-soft, .btn-accent{ padding-top:.55rem; padding-bottom:.55rem; }
+            .btn-group-sm .btn{ padding:.3rem .45rem; }
+
+            /* Wizard stepper */
+            .wizard-stepbar .w-title{ font-size:.8rem; }
+            .wizard-stepbar .w-indicator .step-num{ width:22px;height:22px;font-size:.68rem; }
+            #candidateForm .next-step,
+            #candidateForm .prev-step,
+            #candidateForm .btn-primary-soft,
+            #candidateForm .btn-outline-secondary{ width:100%; }
+            #candidateForm .btn-outline-secondary{ border-color:var(--line); }
+
+            /* Tabel: biar tidak terlalu rapat di HP */
+            .table{ font-size:.85rem; }
+
+            /* Detail calon karyawan: label & nilai bertumpuk di HP */
+            dl.row dt, dl.row dd{ width:100% !important; }
+            dl.row dt{ margin-bottom:.1rem; }
+            dl.row dd{ padding-left:0 !important; margin-bottom:.6rem; }
         }
     </style>
 </head>
@@ -301,5 +367,17 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Matikan fitur browser yang mengingat posisi scroll agar
+        // saat refresh halaman selalu terbuka dari atas.
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted || performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+                window.scrollTo(0, 0);
+            }
+        });
+    </script>
 </body>
 </html>

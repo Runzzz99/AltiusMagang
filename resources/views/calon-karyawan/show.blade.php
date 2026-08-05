@@ -7,13 +7,13 @@
         <a href="{{ route('calon-karyawan.index') }}" class="small text-decoration-none" style="color:var(--primary)">&larr; Kembali ke Daftar</a>
         <h1 class="h4 mb-1 mt-1">Detail Calon Karyawan</h1>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-sm-auto">
         <a href="{{ route('calon-karyawan.edit', $calon) }}" class="btn btn-primary-soft">Ubah Data</a>
         <form action="{{ route('calon-karyawan.destroy', $calon) }}" method="POST"
               onsubmit="return confirm('Yakin ingin menghapus data \"{{ $calon->nama }}\"? Data yang sudah dihapus tidak bisa dikembalikan.')">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn btn-outline-danger">Hapus</button>
+            <button type="submit" class="btn btn-outline-danger w-100">Hapus</button>
         </form>
     </div>
 </div>

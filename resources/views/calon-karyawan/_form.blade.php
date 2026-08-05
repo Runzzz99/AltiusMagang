@@ -368,7 +368,7 @@
                                 <label class="form-label">Nama</label>
                                 <input type="text" name="kerabat_nama[]" value="{{ $kerabat->nama }}" class="form-control">
                             </div>
-                            <div class="col-12 col-md-3">
+                            <div class="col-6 col-md-3">
                                 <label class="form-label">Hubungan</label>
                                 <select name="kerabat_hubungan[]" class="form-select">
                                     <option value="">Pilih</option>
@@ -377,7 +377,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-12 col-md-2">
+                            <div class="col-6 col-md-2">
                                 <label class="form-label">No. Telp</label>
                                 <input type="text" name="kerabat_telp[]" value="{{ $kerabat->no_telp }}" class="form-control">
                             </div>
@@ -398,14 +398,14 @@
                         <label class="form-label">Nama</label>
                         <input type="text" name="kerabat_nama[]" class="form-control">
                     </div>
-                    <div class="col-12 col-md-3">
+                    <div class="col-6 col-md-3">
                         <label class="form-label">Hubungan</label>
                         <select name="kerabat_hubungan[]" class="form-select">
                             <option value="">Pilih</option>
                             <option>Suami/Istri</option><option>Anak</option><option>Orang Tua</option><option>Saudara Kandung</option>
                         </select>
                     </div>
-                    <div class="col-12 col-md-2">
+                    <div class="col-6 col-md-2">
                         <label class="form-label">No. Telp</label>
                         <input type="text" name="kerabat_telp[]" class="form-control">
                     </div>

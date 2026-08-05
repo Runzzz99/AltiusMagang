@@ -5,12 +5,12 @@
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 {{-- Header & Tombol Tambah --}}
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3" data-aos="fade-down" data-aos-duration="600">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3" data-aos="fade-down" data-aos-duration="600">
     <div>
         <h1 class="h4 mb-1">Daftar Calon Karyawan</h1>
         <div class="text-secondary small">Kelola data calon karyawan di sistem HRD.</div>
     </div>
-    <a href="{{ route('calon-karyawan.create') }}" class="btn btn-primary-soft">+ Tambah Calon Karyawan</a>
+    <a href="{{ route('calon-karyawan.create') }}" class="btn btn-primary-soft w-100 w-md-auto">+ Tambah Calon Karyawan</a>
 </div>
 
 {{-- Ringkasan statistik --}}
@@ -37,7 +37,7 @@
 
 {{-- Pencarian & filter --}}
 <form method="GET" action="{{ route('calon-karyawan.index') }}" class="row g-2 mb-3" data-aos="fade-up" data-aos-delay="400">
-    <div class="col-12 col-md-5">
+    <div class="col-12">
         <input type="text" name="q" value="{{ request('q') }}" class="form-control"
                placeholder="Cari nama atau kode kandidat...">
     </div>
