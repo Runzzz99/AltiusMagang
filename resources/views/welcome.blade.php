@@ -39,6 +39,30 @@
         }
         h1,h2,h3,.brand,.display-font{ font-family:'Plus Jakarta Sans',sans-serif; }
 
+        /* ---------- Loading overlay ---------- */
+        .page-loader{
+            position:fixed; inset:0; z-index:9999;
+            background:var(--bg);
+            display:flex; align-items:center; justify-content:center; flex-direction:column;
+            transition:opacity .4s ease, visibility .4s ease;
+        }
+        .page-loader.loaded{
+            opacity:0; visibility:hidden; pointer-events:none;
+        }
+        .loader-spinner{
+            width:44px; height:44px;
+            border:4px solid #e0e7ff;
+            border-top-color:var(--blue);
+            border-radius:50%;
+            animation:spin .7s linear infinite;
+        }
+        .loader-text{
+            margin-top:.8rem;
+            font-size:.82rem; font-weight:600; color:var(--muted);
+            letter-spacing:.04em;
+        }
+        @keyframes spin{ to{ transform:rotate(360deg); } }
+
         /* ---------- Navbar ---------- */
         .navbar{
             background:linear-gradient(180deg, var(--blue) 0%, var(--blue-deep) 100%);
@@ -288,6 +312,12 @@
 </head>
 <body>
 
+    {{-- ===== Loading Overlay ===== --}}
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Memuat halaman...</div>
+    </div>
+
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">PENDAFTARAN CALON KARYAWAN</a>
@@ -509,6 +539,11 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        // Loading state — hilangkan overlay saat halaman selesai load
+        window.addEventListener('load', function () {
+            document.getElementById('pageLoader').classList.add('loaded');
+        });
+
         AOS.init({
             duration: 700,
             easing: 'ease-out-cubic',
@@ -516,13 +551,12 @@
             offset: 60
         });
 
-        // Matikan fitur browser yang mengingat posisi scroll agar
-        // saat refresh halaman selalu terbuka dari atas.
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
         }
         window.addEventListener('pageshow', function (e) {
-            if (e.persisted || performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+            var nav = performance.getEntriesByType('navigation')[0];
+            if (e.persisted || (nav && nav.type === 'reload')) {
                 window.scrollTo(0, 0);
             }
         });
