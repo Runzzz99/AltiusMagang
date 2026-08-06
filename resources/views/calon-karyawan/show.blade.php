@@ -8,15 +8,9 @@
         <h1 class="h4 mb-1 mt-1">Detail Calon Karyawan</h1>
     </div>
     <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-sm-auto">
-        <a href="{{ route('calon-karyawan.edit', $calon) }}" class="btn btn-primary-soft">Ubah Data</a>
-        <form action="{{ route('calon-karyawan.destroy', $calon) }}" method="POST"
-              onsubmit="return confirm('Yakin ingin menghapus data \"{{ $calon->nama }}\"? Data yang sudah dihapus tidak bisa dikembalikan.')">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-outline-danger w-100">Hapus</button>
-        </form>
+            <a href="{{ route('calon-karyawan.index') }}" class="btn btn-primary-soft">Kembali ke Daftar</a>
+        </div>
     </div>
-</div>
 
 {{-- Kartu identitas --}}
 <div class="card-panel p-3 mb-3">

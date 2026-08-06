@@ -10,7 +10,6 @@
         <h1 class="h4 mb-1">Daftar Calon Karyawan</h1>
         <div class="text-secondary small">Kelola data calon karyawan di sistem HRD.</div>
     </div>
-    <a href="{{ route('calon-karyawan.create') }}" class="btn btn-primary-soft w-100 w-md-auto">+ Tambah Calon Karyawan</a>
 </div>
 
 {{-- Ringkasan statistik --}}
@@ -88,26 +87,9 @@
                                 <span class="badge text-bg-secondary">Nonaktif</span>
                             @endif
                         </td>
-                        <td class="text-end">
-                            <div class="btn-group btn-group-sm" role="group" aria-label="Aksi">
-                                <a href="{{ route('calon-karyawan.show', $row) }}" class="btn btn-outline-primary" title="Lihat detail">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                </a>
-                                <a href="{{ route('calon-karyawan.edit', $row) }}" class="btn btn-outline-warning" title="Ubah data">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-                                </a>
-                                <form action="{{ route('calon-karyawan.destroy', $row) }}" method="POST" class="d-inline"
-                                      onsubmit="return confirm('Yakin ingin menghapus data \&quot;{{ $row->nama }}\&quot;? Data yang sudah dihapus tidak bisa dikembalikan.')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-danger" title="Hapus data">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
+                        <td class="text-end"></td>
+                                            </tr>
+                                        @empty
                     <tr>
                         <td colspan="6" class="text-center text-secondary py-4">
                             @if (request('q') || request('status'))
