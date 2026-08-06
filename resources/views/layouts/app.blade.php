@@ -225,11 +225,77 @@
             color:#172554;
             background:#fff;
         }
-        .section-pane{ display:none; padding:1.5rem; }
-        .section-pane.active{ display:block; animation: paneFadeUp .55s cubic-bezier(.25,.46,.45,.94) both; }
-        @keyframes paneFadeUp{
-            from{ opacity:0; transform:translateY(18px); }
-            to{ opacity:1; transform:translateY(0); }
+        /* ---------- Pane crossfade ---------- */
+        .section-pane{
+            display:none; padding:1.5rem;
+            will-change:opacity, transform;
+        }
+        .section-pane.active{
+            display:block;
+            animation: paneIn .65s cubic-bezier(.16,1,.3,1) forwards;
+        }
+        .section-pane.pane-exit{
+            display:block;
+            animation: paneOut .35s cubic-bezier(.55,.06,.68,.19) forwards;
+        }
+        @keyframes paneIn{
+            0%  { opacity:0; transform:translateY(20px) scale(.97); filter:blur(6px); }
+            60% { filter:blur(0); }
+            100%{ opacity:1; transform:translateY(0)    scale(1);  filter:blur(0); }
+        }
+        @keyframes paneOut{
+            0%  { opacity:1; transform:translateY(0)   scale(1);  filter:blur(0); }
+            100%{ opacity:0; transform:translateY(-10px) scale(.98); filter:blur(4px); }
+        }
+
+        /* ---------- Staggered field reveal (organic wave) ---------- */
+        .section-pane.active .row.g-3 > [class*="col-"]{
+            opacity:0; transform:translateY(12px) scale(.98);
+            animation: fieldUp .6s cubic-bezier(.16,1,.3,1) forwards;
+            will-change:opacity, transform;
+        }
+        /* Delay pakai kurva eksponensial — awal cepat, akhir melambat */
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(1)  { animation-delay:.07s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(2)  { animation-delay:.12s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(3)  { animation-delay:.17s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(4)  { animation-delay:.22s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(5)  { animation-delay:.27s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(6)  { animation-delay:.31s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(7)  { animation-delay:.35s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(8)  { animation-delay:.38s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(9)  { animation-delay:.41s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(10) { animation-delay:.44s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(11) { animation-delay:.46s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(12) { animation-delay:.48s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(13) { animation-delay:.50s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(14) { animation-delay:.52s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(15) { animation-delay:.53s; }
+        .section-pane.active .row.g-3 > [class*="col-"]:nth-child(n+16){ animation-delay:.54s; }
+        @keyframes fieldUp{
+            0%  { opacity:0; transform:translateY(12px) scale(.98); }
+            100%{ opacity:1; transform:translateY(0)    scale(1); }
+        }
+
+        /* ---------- Section title ---------- */
+        .section-pane.active .section-title{
+            opacity:0;
+            animation: titleIn .55s cubic-bezier(.16,1,.3,1) .05s forwards;
+        }
+        @keyframes titleIn{
+            0%  { opacity:0; transform:translateX(-10px); letter-spacing:.14em; }
+            100%{ opacity:1; transform:translateX(0);     letter-spacing:.09em; }
+        }
+
+        /* ---------- Bottom buttons ---------- */
+        .section-pane.active .d-flex.justify-content-between,
+        .section-pane.active .text-end{
+            opacity:0;
+            animation: fieldUp .5s cubic-bezier(.16,1,.3,1) .58s forwards;
+        }
+
+        /* ---------- Progress bar smoother ---------- */
+        .wizard-progress .progress-fill{
+            transition:width .6s cubic-bezier(.16,1,.3,1);
         }
         .section-title{
             font-size:.72rem;

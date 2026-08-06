@@ -503,23 +503,44 @@
     const wizFill = document.getElementById('wizFill');
     const totalSteps = panes.length;
 
+    let isTransitioning = false;
+
     function goTo(targetId){
+        if (isTransitioning) return;
         const idx = Array.from(panes).findIndex(p => p.id === targetId);
         if (idx === -1) return;
-        // Tampilkan pane target (tanpa menandai langkah lain sebagai centang/done)
-        panes.forEach((p, i) => {
-            p.classList.toggle('active', i === idx);
-        });
-        steps.forEach((s, i) => {
-            s.classList.toggle('active', i === idx);
-        });
-        // Update breadcrumb + progress bar
+
+        const current = document.querySelector('.section-pane.active');
+        const target  = document.getElementById(targetId);
+        if (!current || !target || current === target) return;
+
+        isTransitioning = true;
+
+        // Update sidebar & progress immediately
+        steps.forEach((s, i) => s.classList.toggle('active', i === idx));
         if (stepTitle) stepTitle.textContent = steps[idx].dataset.label || steps[idx].textContent.trim();
         if (stepCounter) stepCounter.textContent = idx + 1;
         if (wizCount) wizCount.textContent = idx + 1;
         if (wizFill) wizFill.style.width = ((idx + 1) / totalSteps) * 100 + '%';
-        const panel = document.querySelector('.card-panel');
-        window.scrollTo({top: (panel ? panel.offsetTop : 0) - 20, behavior:'smooth'});
+
+        // Fade out current pane
+        current.classList.remove('active');
+        current.classList.add('pane-exit');
+
+        current.addEventListener('animationend', function handler(){
+            current.removeEventListener('animationend', handler);
+            current.classList.remove('pane-exit');
+            current.style.display = 'none';
+
+            // Show target pane with entrance animation
+            target.style.display = '';
+            target.classList.add('active');
+
+            const panel = document.querySelector('.card-panel');
+            window.scrollTo({top: (panel ? panel.offsetTop : 0) - 20, behavior:'smooth'});
+
+            setTimeout(()=>{ isTransitioning = false; }, 500);
+        });
     }
     steps.forEach(btn => btn.addEventListener('click', () => goTo(btn.dataset.target)));
     document.querySelectorAll('.next-step').forEach(btn => btn.addEventListener('click', () => {

@@ -533,7 +533,7 @@
 
         {{-- ===== Footer ===== --}}
         <footer class="footer text-center py-4 mt-5 border-top" data-aos="fade-in">
-            &copy; {{ date('Y') }} <span class="brand-name">Altius</span> &middot; Modul Rekrutmen Data Calon Karyawan.
+            &copy; {{ date('Y') }} <span class="brand-name">Altius</span> &middot; Ruko Mangga Dua B9–11, Jl. Jagir Wonokromo No. 98, Surabaya 60244
         </footer>
     </div>
 
