@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CalonKaryawan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CalonKaryawanController extends Controller
 {
@@ -41,12 +42,50 @@ class CalonKaryawanController extends Controller
 
     public function create()
     {
-        abort(403, 'Database shared hanya dapat dibaca dari aplikasi ini.');
+        $kodeBerikutnya = $this->generateKode();
+
+        return view('calon-karyawan.create', compact('kodeBerikutnya'));
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        abort(403, 'Database shared hanya dapat dibaca dari aplikasi ini.');
+        // Kolom yang AMAN ditulis ke tabel perusahaan (CalonEmployee).
+        // Jangan tambah kolom lain sebelum struktur tabel dikonfirmasi pembimbing.
+        $validated = $request->validate([
+            'kode'  => 'required|string|max:30',
+            'nama'  => 'required|string|max:50',
+            'no_hp' => 'required|string|max:100',
+            'aktif' => 'nullable|boolean',
+        ]);
+
+        $duplicate = CalonKaryawan::where('Kode', $validated['kode'])->exists();
+        if ($duplicate) {
+            return back()
+                ->withInput()
+                ->withErrors(['kode' => 'Kode "' . $validated['kode'] . '" sudah dipakai di database.']);
+        }
+
+        try {
+            DB::transaction(function () use ($validated, $request) {
+                CalonKaryawan::create([
+                    'Kode'     => $validated['kode'],
+                    'Nama'     => $validated['nama'],
+                    'NoHP'     => $validated['no_hp'],
+                    'TglEntry' => now(),
+                    'Aktif'    => $request->boolean('aktif', true),
+                ]);
+            });
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->withInput()
+                ->withErrors(['db' => 'Gagal menyimpan: ' . $e->getMessage()]);
+        }
+
+        return redirect()
+            ->route('calon-karyawan.index')
+            ->with('success', 'Data calon karyawan "' . $validated['nama'] . '" berhasil disimpan.');
     }
 
     public function edit()
@@ -62,5 +101,21 @@ class CalonKaryawanController extends Controller
     public function destroy()
     {
         abort(403, 'Database shared hanya dapat dibaca dari aplikasi ini.');
+    }
+
+    /**
+     * Kode berikutnya = kode numerik terbesar + 1, format 5 digit.
+     * Bila database tidak bisa diakses, fallback ke kode berbasis waktu agar form tetap bisa dibuka.
+     */
+    private function generateKode(): string
+    {
+        try {
+            $last = CalonKaryawan::orderByDesc('Kode')->first();
+            $next = $last ? ((int) preg_replace('/\D/', '', $last->Kode)) + 1 : 1;
+
+            return str_pad((string) $next, 5, '0', STR_PAD_LEFT);
+        } catch (\Throwable $e) {
+            return 'C' . date('ymdHis');
+        }
     }
 }
