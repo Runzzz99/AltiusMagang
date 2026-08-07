@@ -52,10 +52,12 @@ class CalonKaryawanController extends Controller
         // Kolom yang AMAN ditulis ke tabel perusahaan (CalonEmployee).
         // Jangan tambah kolom lain sebelum struktur tabel dikonfirmasi pembimbing.
         $validated = $request->validate([
-            'kode'  => 'required|string|max:30',
-            'nama'  => 'required|string|max:50',
-            'no_hp' => 'nullable|string|max:100',
-            'aktif' => 'nullable|boolean',
+            'kode'         => 'required|string|max:30',
+            'nama'         => 'required|string|max:50',
+            'tempat_lahir' => 'nullable|string|max:20',
+            'tgl_lahir'    => 'nullable|date',
+            'no_hp'        => 'nullable|string|max:100',
+            'aktif'        => 'nullable|boolean',
         ]);
 
         $duplicate = CalonKaryawan::where('Kode', $validated['kode'])->exists();
@@ -68,11 +70,14 @@ class CalonKaryawanController extends Controller
         try {
             DB::transaction(function () use ($validated, $request) {
                 CalonKaryawan::create([
-                    'Kode'     => $validated['kode'],
-                    'Nama'     => $validated['nama'],
-                    'NoHP'     => $validated['no_hp'] ?? '',
-                    'TglEntry' => now(),
-                    'Aktif'    => $request->boolean('aktif', true),
+                    'Kode'         => $validated['kode'],
+                    'Nama'         => $validated['nama'],
+                    'NoHP'         => $validated['no_hp'] ?? '',
+                    'TempatLahir'  => $validated['tempat_lahir'] ?? '',
+                    'TglLahir'     => $validated['tgl_lahir'] ?? now(),
+                    'NRP'          => '',
+                    'TglEntry'     => now(),
+                    'Aktif'        => $request->boolean('aktif', true),
                 ]);
             });
         } catch (\Throwable $e) {
