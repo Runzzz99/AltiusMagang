@@ -72,10 +72,10 @@ class CalonKaryawanController extends Controller
                 CalonKaryawan::create([
                     'Kode'         => $validated['kode'],
                     'Nama'         => $validated['nama'],
-                    'NoHP'         => $validated['no_hp'] ?? '',
+                    'NoHP'         => $validated['no_hp'] ?: ('HP' . $validated['kode']), // UNIQUE constraint: NoHP harus unik per baris. ponytail: ganti ke field NoHP asli bila pembimbing sediakan.
                     'TempatLahir'  => $validated['tempat_lahir'] ?? '',
                     'TglLahir'     => $validated['tgl_lahir'] ?? now(),
-                    'NRP'          => '',
+                    'NRP'          => 'NRP' . $validated['kode'], // UNIQUE constraint: harus unik per baris. ponytail: ganti ke field NRP asli di form bila pembimbing sediakan.
                     'TglEntry'     => now(),
                     'Aktif'        => $request->boolean('aktif', true),
                 ]);
