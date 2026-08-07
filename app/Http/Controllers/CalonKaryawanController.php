@@ -93,19 +93,62 @@ class CalonKaryawanController extends Controller
             ->with('success', 'Data calon karyawan "' . $validated['nama'] . '" berhasil disimpan.');
     }
 
-    public function edit()
+    public function edit(CalonKaryawan $calon)
     {
-        abort(403, 'Database shared hanya dapat dibaca dari aplikasi ini.');
+        $calon->load('dataKerabats');
+
+        return view('calon-karyawan.edit', compact('calon'));
     }
 
-    public function update()
+    public function update(Request $request, CalonKaryawan $calon)
     {
-        abort(403, 'Database shared hanya dapat dibaca dari aplikasi ini.');
+        $validated = $request->validate([
+            'nama'         => 'required|string|max:50',
+            'tempat_lahir' => 'nullable|string|max:20',
+            'tgl_lahir'    => 'nullable|date',
+            'no_hp'        => 'nullable|string|max:100',
+            'aktif'        => 'nullable|boolean',
+        ]);
+
+        try {
+            DB::transaction(function () use ($validated, $request, $calon) {
+                $calon->update([
+                    'Nama'        => $validated['nama'],
+                    'NoHP'        => $validated['no_hp'] ?: $calon->NoHP,
+                    'TempatLahir' => $validated['tempat_lahir'] ?? $calon->TempatLahir,
+                    'TglLahir'    => $validated['tgl_lahir'] ?? $calon->TglLahir,
+                    'Aktif'       => $request->boolean('aktif', $calon->aktif),
+                ]);
+            });
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->withInput()
+                ->withErrors(['db' => 'Gagal memperbarui: ' . $e->getMessage()]);
+        }
+
+        return redirect()
+            ->route('calon-karyawan.show', $calon)
+            ->with('success', 'Data calon karyawan "' . $validated['nama'] . '" berhasil diperbarui.');
     }
 
-    public function destroy()
+    public function destroy(CalonKaryawan $calon)
     {
-        abort(403, 'Database shared hanya dapat dibaca dari aplikasi ini.');
+        try {
+            DB::transaction(function () use ($calon) {
+                $calon->delete();
+            });
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->withErrors(['db' => 'Gagal menghapus: ' . $e->getMessage()]);
+        }
+
+        return redirect()
+            ->route('calon-karyawan.index')
+            ->with('success', 'Data calon karyawan "' . $calon->nama . '" berhasil dihapus.');
     }
 
     /**

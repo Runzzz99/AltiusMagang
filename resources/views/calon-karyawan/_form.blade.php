@@ -22,7 +22,7 @@
         <h1 class="h4 mb-1">{{ $isEdit ? 'Ubah Data Calon Karyawan' : 'Input Data Calon Karyawan' }}</h1>
         <div class="text-secondary small">Lengkapi data berikut untuk {{ $isEdit ? 'memperbarui' : 'mendaftarkan' }} kandidat ke sistem HRD.</div>
     </div>
-    <span class="kode-badge">Kode: {{ $isEdit ? $calon->kode : $kodeBerikutnya }}</span>
+    <span class="kode-badge">Kode: {{ $isEdit ? $calon->kode : ($kodeBerikutnya ?? '-') }}</span>
 </div>
 
 @if ($errors->any())
@@ -39,7 +39,7 @@
     @if ($isEdit)
         @method('PUT')
     @endif
-    <input type="hidden" name="kode" value="{{ old('kode', $isEdit ? $calon->kode : $kodeBerikutnya) }}">
+    <input type="hidden" name="kode" value="{{ old('kode', $isEdit ? $calon->kode : ($kodeBerikutnya ?? '')) }}">
 
     {{-- Progress bar atas --}}
     <div class="wizard-progress"><div class="progress-fill" id="wizFill" style="width:20%"></div></div>
