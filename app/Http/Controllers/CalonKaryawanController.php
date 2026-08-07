@@ -77,7 +77,7 @@ class CalonKaryawanController extends Controller
                     'TglLahir'     => $validated['tgl_lahir'] ?? now(),
                     'NRP'          => 'NRP' . $validated['kode'], // UNIQUE constraint: harus unik per baris. ponytail: ganti ke field NRP asli di form bila pembimbing sediakan.
                     'TglEntry'     => now(),
-                    'Aktif'        => $request->boolean('aktif', true),
+                    'Aktif'        => $request->boolean('aktif'),
                 ]);
             });
         } catch (\Throwable $e) {
@@ -117,7 +117,7 @@ class CalonKaryawanController extends Controller
                     'NoHP'        => $validated['no_hp'] ?: $calon->NoHP,
                     'TempatLahir' => $validated['tempat_lahir'] ?? $calon->TempatLahir,
                     'TglLahir'    => $validated['tgl_lahir'] ?? $calon->TglLahir,
-                    'Aktif'       => $request->boolean('aktif', $calon->aktif),
+                    'Aktif'       => $request->boolean('aktif'),
                 ]);
             });
         } catch (\Throwable $e) {
