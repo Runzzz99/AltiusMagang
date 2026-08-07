@@ -54,7 +54,7 @@ class CalonKaryawanController extends Controller
         $validated = $request->validate([
             'kode'  => 'required|string|max:30',
             'nama'  => 'required|string|max:50',
-            'no_hp' => 'required|string|max:100',
+            'no_hp' => 'nullable|string|max:100',
             'aktif' => 'nullable|boolean',
         ]);
 
@@ -70,7 +70,7 @@ class CalonKaryawanController extends Controller
                 CalonKaryawan::create([
                     'Kode'     => $validated['kode'],
                     'Nama'     => $validated['nama'],
-                    'NoHP'     => $validated['no_hp'],
+                    'NoHP'     => $validated['no_hp'] ?? '',
                     'TglEntry' => now(),
                     'Aktif'    => $request->boolean('aktif', true),
                 ]);
