@@ -58,6 +58,7 @@ class CalonKaryawanController extends Controller
             'tgl_lahir'    => 'nullable|date',
             'no_hp'        => 'nullable|string|max:100',
             'aktif'        => 'nullable|boolean',
+            'foto'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $duplicate = CalonKaryawan::where('Kode', $validated['kode'])->exists();
@@ -69,6 +70,11 @@ class CalonKaryawanController extends Controller
 
         try {
             DB::transaction(function () use ($validated, $request) {
+                $fotoPath = null;
+                if ($request->hasFile('foto')) {
+                    $fotoPath = $request->file('foto')->store('calon-karyawan', 'public');
+                }
+
                 CalonKaryawan::create([
                     'Kode'         => $validated['kode'],
                     'Nama'         => $validated['nama'],
@@ -78,6 +84,7 @@ class CalonKaryawanController extends Controller
                     'NRP'          => 'NRP' . $validated['kode'], // UNIQUE constraint: harus unik per baris. ponytail: ganti ke field NRP asli di form bila pembimbing sediakan.
                     'TglEntry'     => now(),
                     'Aktif'        => $request->boolean('aktif'),
+                    'FileFoto'     => $fotoPath,
                 ]);
             });
         } catch (\Throwable $e) {
@@ -108,16 +115,24 @@ class CalonKaryawanController extends Controller
             'tgl_lahir'    => 'nullable|date',
             'no_hp'        => 'nullable|string|max:100',
             'aktif'        => 'nullable|boolean',
+            'foto'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         try {
             DB::transaction(function () use ($validated, $request, $calon) {
+                if ($request->hasFile('foto')) {
+                    $fotoPath = $request->file('foto')->store('calon-karyawan', 'public');
+                } else {
+                    $fotoPath = $calon->foto_path;
+                }
+
                 $calon->update([
                     'Nama'        => $validated['nama'],
                     'NoHP'        => $validated['no_hp'] ?: $calon->NoHP,
                     'TempatLahir' => $validated['tempat_lahir'] ?? $calon->TempatLahir,
                     'TglLahir'    => $validated['tgl_lahir'] ?? $calon->TglLahir,
                     'Aktif'       => $request->boolean('aktif'),
+                    'FileFoto'    => $fotoPath,
                 ]);
             });
         } catch (\Throwable $e) {
