@@ -16,6 +16,7 @@ Route::prefix('hrd')->group(function () {
     Route::get('/calon-karyawan/create', [CalonKaryawanController::class, 'create'])->name('calon-karyawan.create');
     Route::post('/calon-karyawan', [CalonKaryawanController::class, 'store'])->name('calon-karyawan.store');
     Route::get('/calon-karyawan/{calon}', [CalonKaryawanController::class, 'show'])->name('calon-karyawan.show');
+    Route::get('/calon-karyawan/{calon}/foto', [CalonKaryawanController::class, 'foto'])->name('calon-karyawan.foto');
     Route::get('/calon-karyawan/{calon}/edit', [CalonKaryawanController::class, 'edit'])->name('calon-karyawan.edit');
     Route::put('/calon-karyawan/{calon}', [CalonKaryawanController::class, 'update'])->name('calon-karyawan.update');
     Route::delete('/calon-karyawan/{calon}', [CalonKaryawanController::class, 'destroy'])->name('calon-karyawan.destroy');

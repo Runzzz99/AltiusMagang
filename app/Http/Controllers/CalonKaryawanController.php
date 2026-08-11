@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CalonKaryawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CalonKaryawanController extends Controller
 {
@@ -149,6 +150,10 @@ class CalonKaryawanController extends Controller
     {
         try {
             DB::transaction(function () use ($calon) {
+                // Hapus file foto lokal bila ada supaya tidak menumpuk
+                if ($calon->FileFoto) {
+                    Storage::disk('public')->delete($calon->FileFoto);
+                }
                 $calon->delete();
             });
         } catch (\Throwable $e) {
@@ -161,6 +166,37 @@ class CalonKaryawanController extends Controller
         return redirect()
             ->route('calon-karyawan.index')
             ->with('success', 'Data calon karyawan "' . $calon->nama . '" berhasil dihapus.');
+    }
+
+    /**
+     * Serve the uploaded photo of a candidate.
+     *
+     * Foto disimpan di disk lokal machine yang meng-upload (storage/app/public).
+     * Pada arsitektur database-bersama via VPN, file fisik tidak tersedia
+     * di machine lain sehingga <img src="asset(storage/...)"> broken.
+     * Route ini mengembalikan stream file ketika ada, dan avatar SVG
+     * berinisial nama bila file tidak ditemukan — sehingga tampilan
+     * konsisten di semua machine.
+     */
+    public function foto(CalonKaryawan $calon)
+    {
+        $path = $calon->FileFoto;
+
+        if ($path && Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->response($path);
+        }
+
+        // Fallback: avatar SVG berinisial
+        $inisial = strtoupper(mb_substr($calon->Nama ?? $calon->Kode ?? '?', 0, 1));
+        $svg = <<<SVG
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <rect width="200" height="200" rx="100" fill="#e0e7ff"/>
+  <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle"
+        font-family="ui-sans-serif, sans-serif" font-size="80" font-weight="700" fill="#4338ca">{$inisial}</text>
+</svg>
+SVG;
+        return response($svg, 200, ['Content-Type' => 'image/svg+xml']);
     }
 
     private function generateKode(): string
