@@ -482,7 +482,7 @@
                     <label class="photo-drop d-block" for="fotoInput">
                         {{-- Tampilkan foto lama pada mode edit --}}
                         @if ($isEdit && $calon->foto_path)
-                            <img id="fotoPreview" src="{{ asset('storage/' . $calon->foto_path) }}" alt="Foto {{ $calon->nama }}" style="display:inline-block">
+                            <img id="fotoPreview" src="{{ route('calon-karyawan.foto', $calon) }}" alt="Foto {{ $calon->nama }}" style="display:inline-block">
                             <div id="fotoPlaceholder" style="display:none">Klik untuk ganti foto (JPG/PNG, maks 2MB)</div>
                         @else
                             <img id="fotoPreview" alt="Preview foto">
