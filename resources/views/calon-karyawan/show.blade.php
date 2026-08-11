@@ -17,10 +17,12 @@
     <div class="d-flex flex-column flex-sm-row align-items-start gap-3">
         @if ($calon->foto_path)
             <img src="{{ route('calon-karyawan.foto', $calon) }}" alt="Foto {{ $calon->nama }}"
-                 style="width:96px;height:96px;object-fit:cover;border-radius:12px;border:1px solid var(--line)">
+                 data-foto-lightbox data-foto-src="{{ route('calon-karyawan.foto', $calon) }}"
+                 style="width:96px;height:96px;object-fit:cover;border-radius:12px;border:1px solid var(--line);cursor:zoom-in">
         @else
             <div class="d-flex align-items-center justify-content-center"
-                 style="width:96px;height:96px;border-radius:12px;background:#eef2ff;color:var(--primary);font-size:2rem;font-weight:700">
+                 data-foto-lightbox data-foto-src="{{ route('calon-karyawan.foto', $calon) }}"
+                 style="width:96px;height:96px;border-radius:12px;background:#eef2ff;color:var(--primary);font-size:2rem;font-weight:700;cursor:zoom-in">
                 {{ strtoupper(mb_substr($calon->nama, 0, 1)) }}
             </div>
         @endif

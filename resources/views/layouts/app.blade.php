@@ -326,7 +326,7 @@
             background:#fafbfd;
             cursor:pointer;
         }
-        #fotoPreview{ max-height:140px; border-radius:10px; display:none; }
+        #fotoPreview{ max-height:140px; border-radius:10px; display:none; cursor:zoom-in; }
 
         /* Mobile: sidebar disembunyikan, fallback ke breadcrumb step */
         @media (max-width: 991.98px){
@@ -432,6 +432,19 @@
         @yield('content')
     </div>
 
+    {{-- Lightbox: klik foto kecil (data-foto-lightbox) utk lihat besar, gaya IG --}}
+    <div class="modal fade" id="fotoLightboxModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-sm-down">
+            <div class="modal-content bg-transparent border-0">
+                <div class="text-end mb-2">
+                    <button type="button" class="btn btn-light btn-sm rounded-circle" data-bs-dismiss="modal" aria-label="Tutup">&times;</button>
+                </div>
+                <img id="fotoLightboxImg" src="" alt="Foto kandidat" class="img-fluid rounded mx-auto d-block"
+                                 style="max-height:90vh;width:auto;max-width:90vw;background:#fff;border:1px solid var(--line);box-shadow:0 5px 30px rgba(15,23,42,.4)">
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Matikan fitur browser yang mengingat posisi scroll agar
@@ -443,6 +456,17 @@
             if (e.persisted || performance.navigation.type === performance.navigation.TYPE_RELOAD) {
                 window.scrollTo(0, 0);
             }
+        });
+
+        // Lightbox foto: elemen ber-atribut data-foto-lightbox -> klik -> tampil besar
+        document.addEventListener('click', function (e) {
+            const trigger = e.target.closest('[data-foto-lightbox]');
+            if (!trigger) return;
+            const src = trigger.dataset.fotoSrc || trigger.currentSrc || trigger.src;
+            if (!src) return;
+            const modal = document.getElementById('fotoLightboxModal');
+            document.getElementById('fotoLightboxImg').src = src;
+            bootstrap.Modal.getOrCreateInstance(modal).show();
         });
     </script>
 </body>

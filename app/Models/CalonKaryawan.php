@@ -165,6 +165,11 @@ class CalonKaryawan extends Model
         ];
     }
 
+    public function getFotoPathAttribute()
+    {
+        return (string) $this->getAttribute('FileFoto');
+    }
+
     public function dataKerabats()
     {
         return $this->hasMany(DataKerabat::class, 'Kode', 'Kode');
