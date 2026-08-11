@@ -49,8 +49,6 @@ class CalonKaryawanController extends Controller
 
     public function store(Request $request)
     {
-        // Kolom yang AMAN ditulis ke tabel perusahaan (CalonEmployee).
-        // Jangan tambah kolom lain sebelum struktur tabel dikonfirmasi pembimbing.
         $validated = $request->validate([
             'kode'         => 'required|string|max:30',
             'nama'         => 'required|string|max:50',
@@ -78,12 +76,12 @@ class CalonKaryawanController extends Controller
                 CalonKaryawan::create([
                     'Kode'         => $validated['kode'],
                     'Nama'         => $validated['nama'],
-                    'NoHP'         => $validated['no_hp'] ?: ('HP' . $validated['kode']), // UNIQUE constraint: NoHP harus unik per baris. ponytail: ganti ke field NoHP asli bila pembimbing sediakan.
+                    'NoHP'         => $validated['no_hp'] ?: ('HP' . $validated['kode']),
                     'TempatLahir'  => $validated['tempat_lahir'] ?? '',
                     'TglLahir'     => $validated['tgl_lahir'] ?? now(),
-                    'NRP'          => 'NRP' . $validated['kode'], // UNIQUE constraint: harus unik per baris. ponytail: ganti ke field NRP asli di form bila pembimbing sediakan.
+                    'NRP'          => 'NRP' . $validated['kode'],
                     'TglEntry'     => now(),
-                    'Aktif'        => $request->boolean('aktif'),
+                    'Aktif'        => $request->boolean('aktif', true),
                     'FileFoto'     => $fotoPath,
                 ]);
             });
@@ -120,20 +118,19 @@ class CalonKaryawanController extends Controller
 
         try {
             DB::transaction(function () use ($validated, $request, $calon) {
-                if ($request->hasFile('foto')) {
-                    $fotoPath = $request->file('foto')->store('calon-karyawan', 'public');
-                } else {
-                    $fotoPath = $calon->foto_path;
-                }
-
-                $calon->update([
+                $payload = [
                     'Nama'        => $validated['nama'],
                     'NoHP'        => $validated['no_hp'] ?: $calon->NoHP,
                     'TempatLahir' => $validated['tempat_lahir'] ?? $calon->TempatLahir,
                     'TglLahir'    => $validated['tgl_lahir'] ?? $calon->TglLahir,
-                    'Aktif'       => $request->boolean('aktif'),
-                    'FileFoto'    => $fotoPath,
-                ]);
+                    'Aktif'       => $request->boolean('aktif', $calon->aktif),
+                ];
+
+                if ($request->hasFile('foto')) {
+                    $payload['FileFoto'] = $request->file('foto')->store('calon-karyawan', 'public');
+                }
+
+                $calon->update($payload);
             });
         } catch (\Throwable $e) {
             report($e);
@@ -166,10 +163,6 @@ class CalonKaryawanController extends Controller
             ->with('success', 'Data calon karyawan "' . $calon->nama . '" berhasil dihapus.');
     }
 
-    /**
-     * Kode berikutnya = kode numerik terbesar + 1, format 5 digit.
-     * Bila database tidak bisa diakses, fallback ke kode berbasis waktu agar form tetap bisa dibuka.
-     */
     private function generateKode(): string
     {
         try {
