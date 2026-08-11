@@ -321,7 +321,7 @@
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">PENDAFTARAN CALON KARYAWAN</a>
-            <a class="btn btn-accent btn-sm px-3" href="{{ route('calon-karyawan.index') }}">Daftar</a>
+            <a class="btn btn-accent btn-sm px-3" href="{{ route('calon-karyawan.index') }}">Calon Karyawan</a>
         </div>
     </nav>
 

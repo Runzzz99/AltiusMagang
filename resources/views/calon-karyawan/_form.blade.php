@@ -17,10 +17,10 @@
     ];
 @endphp
 
-<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3 page-head">
     <div>
-        <h1 class="h4 mb-1">{{ $isEdit ? 'Ubah Data Calon Karyawan' : 'Input Data Calon Karyawan' }}</h1>
-        <div class="text-secondary small">Lengkapi data berikut untuk {{ $isEdit ? 'memperbarui' : 'mendaftarkan' }} kandidat ke sistem HRD.</div>
+        <h1 class="mb-1">{{ $isEdit ? 'Ubah Data Calon Karyawan' : 'Input Data Calon Karyawan' }}</h1>
+        <p class="page-sub">Lengkapi data berikut untuk {{ $isEdit ? 'memperbarui' : 'mendaftarkan' }} kandidat ke sistem HRD.</p>
     </div>
     <span class="kode-badge">Kode: {{ $isEdit ? $calon->kode : ($kodeBerikutnya ?? '-') }}</span>
 </div>
@@ -155,15 +155,6 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">No. HP</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                        </span>
-                        <input type="text" name="no_hp" value="{{ old('no_hp', $calon->no_hp ?? '') }}" class="form-control" placeholder="Contoh: 0812xxxx">
-                    </div>
-                </div>
-                <div class="col-md-8">
                     <label class="form-label">Alamat KTP</label>
                     <input type="text" name="alamat_ktp" value="{{ old('alamat_ktp', $calon->alamat_ktp ?? '') }}" class="form-control">
                 </div>
@@ -547,7 +538,7 @@
             target.style.display = '';
             target.classList.add('active');
 
-            const panel = document.querySelector('.card-panel');
+            const panel = document.getElementById('candidateForm').querySelector('.card-panel') || document.querySelector('.card-panel');
             window.scrollTo({top: (panel ? panel.offsetTop : 0) - 20, behavior:'smooth'});
 
             setTimeout(()=>{ isTransitioning = false; }, 500);

@@ -2,15 +2,17 @@
 @section('title', 'Detail ' . $calon->nama)
 
 @section('content')
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+<div class="page-head">
     <div>
-        <a href="{{ route('calon-karyawan.index') }}" class="small text-decoration-none" style="color:var(--primary)">&larr; Kembali ke Daftar</a>
-        <h1 class="h4 mb-1 mt-1">Detail Calon Karyawan</h1>
+        <a href="{{ route('calon-karyawan.index') }}" class="small text-decoration-none" style="color:var(--primary)">&larr; Daftar Calon Karyawan</a>
+        <h1>Detail Calon Karyawan</h1>
+        <p class="page-sub">Ringkasan data kandidat untuk kebutuhan HRD.</p>
     </div>
     <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-sm-auto">
-            <a href="{{ route('calon-karyawan.index') }}" class="btn btn-primary-soft">Kembali ke Daftar</a>
-        </div>
+        <a href="{{ route('calon-karyawan.edit', $calon) }}" class="btn btn-primary-soft">Ubah Data</a>
+        <a href="{{ route('calon-karyawan.index') }}" class="btn btn-outline-secondary">Kembali</a>
     </div>
+</div>
 
 {{-- Kartu identitas --}}
 <div class="card-panel p-3 mb-3">
@@ -63,7 +65,7 @@
         ],
         'Alamat & Kontak' => [
             'Alamat Domisili' => $calon->alamat,
-            'No. Telepon / HP' => $calon->no_telp,
+            'No. Telepon / HP' => $calon->no_hp ?: $calon->no_telp,
             'Email' => $calon->email,
             'Status Tempat Tinggal' => $calon->status_tempat_tinggal,
             'Hobi' => $calon->hobby,

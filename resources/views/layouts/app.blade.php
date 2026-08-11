@@ -43,29 +43,34 @@
         .navbar .navbar-brand{
             color:#fff;
             font-weight:800;
-            letter-spacing:.02em;
-            font-size:1.05rem;
+            letter-spacing:-.01em;
+            font-size:1.03rem;
+            line-height:1.1;
         }
         .navbar .navbar-brand small{
             display:block;
             font-family:'Inter',sans-serif;
-            font-weight:400;
-            font-size:.7rem;
+            font-weight:500;
+            font-size:.68rem;
             color:#c7d2fe;
             letter-spacing:.08em;
             text-transform:uppercase;
         }
         .navbar .nav-link{
             color:#dbeafe;
-            font-weight:500;
+            font-weight:600;
             font-size:.9rem;
+            border-radius:.6rem;
+            padding:.45rem .7rem;
         }
-        .navbar .nav-link:hover,
+        .navbar .nav-link:hover{
+            color:#fff;
+            background:rgba(255,255,255,.12);
+        }
         .navbar .nav-link.active{
             color:#fff;
-        }
-        .navbar .nav-link.active{
-            font-weight:600;
+            background:rgba(255,255,255,.18);
+            box-shadow:inset 0 -2px 0 rgba(255,255,255,.9);
         }
         .navbar .navbar-toggler{
             border-color:rgba(255,255,255,.35);
@@ -144,6 +149,68 @@
         .table tbody td{
             vertical-align:middle;
         }
+
+        /* ---------- UI kit (corporate, HRD) ---------- */
+        .page-head{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.75rem; margin-bottom:1.25rem; }
+        .page-head h1{ font-size:1.3rem; font-weight:800; margin:0; letter-spacing:-.01em; }
+        .page-head .page-sub{ color:var(--muted); font-size:.85rem; margin:0; }
+
+        .metric-card{
+            background:#fff; border:1px solid var(--line); border-radius:12px;
+            padding:1rem 1.15rem; height:100%;
+        }
+        .metric-card .metric-label{ font-size:.72rem; text-transform:uppercase; letter-spacing:.07em; font-weight:700; color:var(--muted); }
+        .metric-card .metric-value{ font-size:1.7rem; font-weight:800; line-height:1.1; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; }
+        .metric-card .metric-sub{ font-size:.75rem; color:#94a3b8; }
+
+        .data-toolbar{
+            background:#fff; border:1px solid var(--line); border-radius:12px;
+            padding:.9rem 1rem; margin-bottom:1rem;
+            display:flex; flex-wrap:wrap; gap:.6rem; align-items:center;
+        }
+        .data-toolbar .form-control,.data-toolbar .form-select{ border-radius:.55rem; }
+        .data-toolbar .search-wrap{ position:relative; flex:1 1 220px; }
+        .data-toolbar .search-wrap svg{ position:absolute; left:.7rem; top:50%; transform:translateY(-50%); color:var(--muted); }
+        .data-toolbar .search-wrap input{ padding-left:2.1rem; }
+
+        .btn-action{
+            display:inline-flex; align-items:center; gap:.35rem;
+            font-size:.78rem; font-weight:600;
+            border-radius:.5rem; padding:.3rem .55rem;
+            white-space:nowrap;
+        }
+
+        .empty-state{
+            text-align:center; padding:2.6rem 1.5rem; color:var(--muted);
+        }
+        .empty-state .empty-icon{
+            width:52px; height:52px; margin:0 auto .8rem; border-radius:14px;
+            background:#f1f5f9; color:#94a3b8;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .empty-state h3{ font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:.3rem; }
+        .empty-state p{ font-size:.85rem; margin-bottom:.9rem; }
+
+        .status-badge{
+            display:inline-flex; align-items:center; gap:.35rem;
+            font-size:.72rem; font-weight:700; padding:.3rem .6rem; border-radius:999px;
+            white-space:nowrap;
+        }
+        .status-badge::before{ content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+        .status-badge.is-aktif{ background:#ecfdf5; color:#047857; }
+        .status-badge.is-nonaktif{ background:#f1f5f9; color:#64748b; }
+
+        .table thead th{ background:#f8fafc; }
+        .table-hover tbody tr:hover{ background:#f8fafc; }
+        .table td .text-empty{ color:#cbd5e1; }
+
+        .table-sm-actions .btn-action > span{ display:inline; }
+        @media (max-width:767.98px){
+            .table-sm-actions .btn-action > span{ display:none; }
+        }
+
+        .form-hint{ font-size:.75rem; color:#94a3b8; margin-top:.3rem; }
+        .required-mark{ color:#dc2626; }
 
         /* ------- Wizard stepper ------- */
         .wizard-progress{
@@ -402,7 +469,10 @@
 <body>
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">PENDAFTARAN CALON KARYAWAN</a>
+            <a class="navbar-brand" href="{{ route('home') }}">
+                AltiusMagang
+                <small>Sistem Manajemen HRD</small>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Buka menu">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -411,9 +481,11 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Beranda</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('calon-karyawan.*') ? 'active' : '' }}" href="{{ route('calon-karyawan.index') }}">Daftar Calon Karyawan</a>
-                    </li>
+                    @unless (request()->routeIs('calon-karyawan.*'))
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('calon-karyawan.index') }}">Calon Karyawan</a>
+                        </li>
+                    @endunless
                     <li class="nav-item">
                         <a class="btn btn-accent btn-sm ms-lg-2 my-2 my-lg-0" href="{{ route('calon-karyawan.create') }}">+ Tambah</a>
                     </li>
