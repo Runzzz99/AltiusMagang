@@ -228,10 +228,11 @@ class CalonKaryawanController extends Controller
             return null;
         }
 
+        // Form accepts reference code or label. Keep raw value when legacy lookup has no row.
         return DB::table($table)
             ->where('Kode', $value)
             ->orWhere('Keterangan', $value)
-            ->value('Kode') ?: null;
+            ->value('Kode') ?: $value;
     }
 
     public function destroy(CalonKaryawan $calon)
