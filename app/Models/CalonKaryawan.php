@@ -100,6 +100,8 @@ class CalonKaryawan extends Model
         'kode_lama'             => 'KodeLama',
         'alias_kode'            => 'AliasKode',
         'org'                   => 'Org',
+        'organisasi'            => 'Org',
+        'tipe_rekening'         => 'Tipe',
         'no_kk'                 => 'NoKK',
         'no_bpjs_kesehatan'     => 'NoBPJSKesehatan',
         'no_bpjs_tenaga_kerja'  => 'NoBPJSTenagaKerja',

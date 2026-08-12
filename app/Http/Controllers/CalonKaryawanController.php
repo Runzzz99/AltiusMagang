@@ -50,15 +50,7 @@ class CalonKaryawanController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'kode'         => 'required|string|max:30',
-            'nama'         => 'required|string|max:50',
-            'tempat_lahir' => 'nullable|string|max:20',
-            'tgl_lahir'    => 'nullable|date',
-            'no_hp'        => 'nullable|string|max:100',
-            'aktif'        => 'nullable|boolean',
-            'foto'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $validated = $this->validateForm($request, true);
 
         $duplicate = CalonKaryawan::where('Kode', $validated['kode'])->exists();
         if ($duplicate) {
@@ -69,22 +61,20 @@ class CalonKaryawanController extends Controller
 
         try {
             DB::transaction(function () use ($validated, $request) {
-                $fotoPath = null;
-                if ($request->hasFile('foto')) {
-                    $fotoPath = $request->file('foto')->store('calon-karyawan', 'public');
+                $payload = $this->buildPayload($validated, $request);
+                $payload['Kode'] = $validated['kode'];
+                $payload['TglEntry'] = now();
+                if (empty($payload['no_hp'])) {
+                    $payload['no_hp'] = 'HP' . $validated['kode'];
                 }
+                if (empty($payload['nrp'])) {
+                    $payload['nrp'] = 'NRP' . $validated['kode'];
+                }
+                $payload['tempat_lahir'] = ($payload['tempat_lahir'] ?? '') ?: '';
+                $payload['tgl_lahir'] = ($payload['tgl_lahir'] ?? '') ?: now();
+                $payload['cuti_per_tahun'] = ($payload['cuti_per_tahun'] ?? 12) ?: 12;
 
-                CalonKaryawan::create([
-                    'Kode'         => $validated['kode'],
-                    'Nama'         => $validated['nama'],
-                    'NoHP'         => $validated['no_hp'] ?: ('HP' . $validated['kode']),
-                    'TempatLahir'  => $validated['tempat_lahir'] ?? '',
-                    'TglLahir'     => $validated['tgl_lahir'] ?? now(),
-                    'NRP'          => 'NRP' . $validated['kode'],
-                    'TglEntry'     => now(),
-                    'Aktif'        => $request->boolean('aktif', true),
-                    'FileFoto'     => $fotoPath,
-                ]);
+                CalonKaryawan::create($payload);
             });
         } catch (\Throwable $e) {
             report($e);
@@ -108,29 +98,11 @@ class CalonKaryawanController extends Controller
 
     public function update(Request $request, CalonKaryawan $calon)
     {
-        $validated = $request->validate([
-            'nama'         => 'required|string|max:50',
-            'tempat_lahir' => 'nullable|string|max:20',
-            'tgl_lahir'    => 'nullable|date',
-            'no_hp'        => 'nullable|string|max:100',
-            'aktif'        => 'nullable|boolean',
-            'foto'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $validated = $this->validateForm($request, false);
 
         try {
             DB::transaction(function () use ($validated, $request, $calon) {
-                $payload = [
-                    'Nama'        => $validated['nama'],
-                    'NoHP'        => $validated['no_hp'] ?: $calon->NoHP,
-                    'TempatLahir' => $validated['tempat_lahir'] ?? $calon->TempatLahir,
-                    'TglLahir'    => $validated['tgl_lahir'] ?? $calon->TglLahir,
-                    'Aktif'       => $request->boolean('aktif', $calon->aktif),
-                ];
-
-                if ($request->hasFile('foto')) {
-                    $payload['FileFoto'] = $request->file('foto')->store('calon-karyawan', 'public');
-                }
-
+                $payload = $this->buildPayload($validated, $request, $calon);
                 $calon->update($payload);
             });
         } catch (\Throwable $e) {
@@ -144,6 +116,122 @@ class CalonKaryawanController extends Controller
         return redirect()
             ->route('calon-karyawan.show', $calon)
             ->with('success', 'Data calon karyawan "' . $validated['nama'] . '" berhasil diperbarui.');
+    }
+
+    private function validateForm(Request $request, bool $isStore): array
+    {
+        $rules = [
+            'nama'                  => 'required|string|max:50',
+            'panggilan'             => 'nullable|string|max:50',
+            'tempat_lahir'          => 'nullable|string|max:20',
+            'tgl_lahir'             => 'nullable|date',
+            'sex'                   => 'nullable|string|max:1',
+            'agama'                 => 'nullable|string|max:20',
+            'status_nikah'          => 'nullable|string|max:20',
+            'warga_negara'          => 'nullable|string|max:20',
+            'gol_darah'             => 'nullable|string|max:5',
+            'tinggi_cm'             => 'nullable|numeric',
+            'berat_kg'              => 'nullable|numeric',
+            'no_ktp'                => 'nullable|string|max:100',
+            'alamat_ktp'            => 'nullable|string|max:255',
+            'kota_ktp'              => 'nullable|string|max:20',
+            'no_sim'                => 'nullable|string|max:50',
+            'alamat'                => 'nullable|string|max:200',
+            'no_hp'                 => 'nullable|string|max:100',
+            'email'                 => 'nullable|email|max:255',
+            'status_tempat_tinggal' => 'nullable|string|max:20',
+            'hobby'                 => 'nullable|string|max:50',
+            'keterangan'            => 'nullable|string|max:255',
+            'tgl_masuk'             => 'nullable|date',
+            'awal_cabang'           => 'nullable|string|max:8',
+            'group_of_employee'     => 'nullable|string|max:30',
+            'awal_group_of_employee'=> 'nullable|string|max:30',
+            'divisi'                => 'nullable|string|max:10',
+            'pangkat'               => 'nullable|string|max:10',
+            'kategori'              => 'nullable|string|max:10',
+            'sub_kategori'          => 'nullable|string|max:10',
+            'jalur_pendaftaran'     => 'nullable|string|max:10',
+            'nrp'                   => 'nullable|string|max:50',
+            'cost_center'           => 'nullable|string|max:30',
+            'posting'               => 'nullable|string|max:30',
+            'cuti_per_tahun'        => 'nullable|integer',
+            'organisasi'            => 'nullable|string|max:10',
+            'grup1'                 => 'nullable|string|max:50',
+            'grup2'                 => 'nullable|string|max:50',
+            'grup3'                 => 'nullable|string|max:50',
+            'no_kk'                 => 'nullable|string|max:100',
+            'no_bpjs_kesehatan'     => 'nullable|string|max:100',
+            'no_bpjs_tenaga_kerja'  => 'nullable|string|max:100',
+            'no_passport'           => 'nullable|string|max:50',
+            'passport_expired'      => 'nullable|date',
+            'no_visa'               => 'nullable|string|max:50',
+            'nama_bank'             => 'nullable|string|max:50',
+            'no_rekening'           => 'nullable|string|max:50',
+            'atas_nama_rekening'    => 'nullable|string|max:100',
+            'tipe_rekening'         => 'nullable|string|max:50',
+            'password'              => 'nullable|string|max:100',
+            'aktif'                 => 'nullable|boolean',
+            'foto'                  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ];
+
+        if ($isStore) {
+            $rules['kode'] = 'required|string|max:30';
+        }
+
+        return $request->validate($rules);
+    }
+
+    private function buildPayload(array $v, Request $request, ?CalonKaryawan $calon = null): array
+    {
+        $fields = [
+            'nama','panggilan','tempat_lahir','tgl_lahir','sex','agama',
+            'status_nikah','warga_negara','gol_darah','tinggi_cm','berat_kg',
+            'no_ktp','alamat_ktp','kota_ktp','no_sim','alamat','no_hp','email',
+            'status_tempat_tinggal','hobby','keterangan','tgl_masuk','awal_cabang',
+            'group_of_employee','awal_group_of_employee','divisi','pangkat',
+            'kategori','sub_kategori','jalur_pendaftaran','nrp','cost_center',
+            'posting','cuti_per_tahun','organisasi','grup1','grup2','grup3',
+            'no_kk','no_bpjs_kesehatan','no_bpjs_tenaga_kerja','no_passport',
+            'passport_expired','no_visa','nama_bank','no_rekening',
+            'atas_nama_rekening','tipe_rekening',
+        ];
+
+        $payload = [];
+        foreach ($fields as $f) {
+            if (array_key_exists($f, $v)) {
+                $payload[$f] = $v[$f];
+            }
+        }
+
+        if (!empty($v['password'])) {
+            $payload['password'] = $v['password'];
+        }
+
+        $payload['aktif'] = $request->boolean('aktif', $calon?->aktif ?? true);
+
+        foreach (['divisi' => 'EmployeeDivisi', 'pangkat' => 'EmployeePangkat', 'kategori' => 'EmployeeKategori', 'sub_kategori' => 'EmployeeSubKategori', 'jalur_pendaftaran' => 'EmployeeJalurPendaftaran', 'group_of_employee' => 'GroupOfEmployee', 'awal_group_of_employee' => 'GroupOfEmployee', 'organisasi' => 'EmployeeOrg'] as $f => $table) {
+            if (array_key_exists($f, $payload)) {
+                $payload[$f] = $this->resolveFk($table, $payload[$f]);
+            }
+        }
+
+        if ($request->hasFile('foto')) {
+            $payload['foto_path'] = $request->file('foto')->store('calon-karyawan', 'public');
+        }
+
+        return $payload;
+    }
+
+    private function resolveFk(string $table, ?string $value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return DB::table($table)
+            ->where('Kode', $value)
+            ->orWhere('Keterangan', $value)
+            ->value('Kode') ?: null;
     }
 
     public function destroy(CalonKaryawan $calon)
