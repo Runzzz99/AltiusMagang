@@ -56,7 +56,7 @@ class CalonKaryawanController extends Controller
             'nama'         => 'required|string|max:50',
             'tempat_lahir' => 'nullable|string|max:20',
             'tgl_lahir'    => 'nullable|date',
-            'no_telp'        => 'nullable|string|max:100',
+            'no_hp'        => 'nullable|string|max:100',
             'aktif'        => 'nullable|boolean',
         ]);
 
@@ -106,7 +106,7 @@ class CalonKaryawanController extends Controller
             'nama'         => 'required|string|max:50',
             'tempat_lahir' => 'nullable|string|max:20',
             'tgl_lahir'    => 'nullable|date',
-            'no_telp'        => 'nullable|string|max:100',
+            'no_hp'        => 'nullable|string|max:100',
             'aktif'        => 'nullable|boolean',
         ]);
 
